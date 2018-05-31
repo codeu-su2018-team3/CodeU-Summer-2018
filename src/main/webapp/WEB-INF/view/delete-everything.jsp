@@ -59,7 +59,8 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
   <div id="container">
 
-    This page is under construction. Sorry!
+    <!-- we should add permissions so someone doesn't accidentally use this -->
+    <a href="/delete-everything"></a>
 
   </div>
 
