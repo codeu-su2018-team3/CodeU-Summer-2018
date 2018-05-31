@@ -59,7 +59,7 @@ List<Message> messages = (List<Message>) request.getAttribute("messages");
 
   <div id="container">
 
-    This page is under construction. Sorry.
+    This page is under construction. Sorry!
 
   </div>
 
