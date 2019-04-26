@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import codeu.model.data.Message;
 import codeu.model.data.User;
@@ -29,6 +30,8 @@ public class AdminServlet extends HttpServlet {
 		setConversationStore(ConversationStore.getInstance());
 		setMessageStore(MessageStore.getInstance());
 		setUserStore(UserStore.getInstance());
+		if(userStore.getUser("admin") != null)
+			userStore.getUser("admin").makeAdmin();
 	}
 
 	/**
@@ -60,8 +63,24 @@ public class AdminServlet extends HttpServlet {
 	 * This function fires when a user requests the /admin URL. It forwards the
 	 * request to adminpage.jsp
 	 */
-	@Override
+	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		HttpSession currentSession = request.getSession();
+	  String username =  (String) currentSession.getAttribute("user");
+		User user = userStore.getUser(username);
+		if(userStore.getNumUsers() != 0 ) { //checks if no users exist first
+			if(user == null) { //if not logged in, redirect
+				response.sendRedirect("/notanadmin.jsp");
+				return;
+			}
+			Boolean isAdmin = user.getAdmin();
+			if (!isAdmin) {
+				//current user is not admin, redirect to another page
+				response.sendRedirect("/notanadmin.jsp");
+				return;
+			}
+		}
+		request.setAttribute("newestUser", userStore.getNewest().getName());
 		request.setAttribute("userCount", userStore.getNumUsers());
 		request.setAttribute("messageCount", messageStore.getNumMessages());
 		request.setAttribute("conversationCount", conversationStore.getNumConversations());
